@@ -12,18 +12,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $guarded = ["id"];
-
-    public function category()
-    {
-        return $this->hasMany(Categories::class);
-    }
-
-    public function article()
-    {
-        return $this->hasMany(Articles::class);
-    }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -53,4 +41,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }
