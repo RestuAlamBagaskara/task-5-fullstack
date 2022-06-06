@@ -1,21 +1,26 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
-use App\Models\Article;
+use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class ArticleController extends Controller
+class CategoryController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $articles = Article::paginate(5);
+        $categories = Category::all();
         return response()->json([
             'success' => true,
-            'articles' => $articles
+            'categories' => $categories
         ]);
     }
 
@@ -28,10 +33,7 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'content' => 'required',
-            'image' => 'required|url',
-            'category_id' => 'required',
+            'name' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -43,17 +45,17 @@ class ArticleController extends Controller
 
         $request['user_id'] = Auth::user()->id;
 
-        $article = Article::create($request->toArray());
+        $category = Category::create($request->toArray());
 
-        if ($article)
+        if ($category)
             return response()->json([
                 'success' => true,
-                'article' => $article
+                'category' => $category
             ]);
         else
             return response()->json([
                 'success' => false,
-                'message' => 'Article not added'
+                'message' => 'Category not added'
             ], 500);
     }
 
@@ -65,18 +67,18 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $articles = Article::find($id);
+        $category = Category::find($id);
 
-        if (!$articles) {
+        if (!$category) {
             return response()->json([
                 'success' => false,
-                'message' => 'Article not found '
+                'message' => 'Category not found '
             ], 400);
         }
 
         return response()->json([
             'success' => true,
-            'article' => $articles
+            'category' => $category
         ]);
     }
 
@@ -90,10 +92,7 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'content' => 'required',
-            'image' => 'required|url',
-            'category_id' => 'required',
+            'name' => 'required',
             'user_id' => 'required',
         ]);
 
@@ -104,16 +103,16 @@ class ArticleController extends Controller
             ], 422);
         }
 
-        $article = Article::where('id', $id);
+        $category = Category::where('id', $id);
 
-        if (!$article) {
+        if (!$category) {
             return response()->json([
                 'success' => false,
-                'message' => 'Article not found'
+                'message' => 'Category not found'
             ], 400);
         }
 
-        $updated = Article::where('id', $id)->update($request->toArray());
+        $updated = Category::where('id', $id)->update($request->toArray());
 
         if ($updated)
             return response()->json([
@@ -122,7 +121,7 @@ class ArticleController extends Controller
         else
             return response()->json([
                 'success' => false,
-                'message' => 'Article can not be updated'
+                'message' => 'Category can not be updated'
             ], 500);
     }
 
@@ -134,23 +133,23 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
-        $article = Article::where('id', $id);
+        $category = Category::where('id', $id);
 
-        if (!$article) {
+        if (!$category) {
             return response()->json([
                 'success' => false,
-                'message' => 'Article not found'
+                'message' => 'Category not found'
             ], 400);
         }
 
-        if (Article::destroy($id)) {
+        if (Category::destroy($id)) {
             return response()->json([
                 'success' => true
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Article can not be deleted'
+                'message' => 'Category can not be deleted'
             ], 500);
         }
     }

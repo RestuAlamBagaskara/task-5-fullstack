@@ -23,3 +23,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 Route::resource('/dashboard/posts', App\Http\Controllers\DashboardPostController::class)->middleware('auth');
+
+Route::get('/users', [UserController::class, 'index']);
+
+Route::resource('articles', ArticleController::class);
+
+Route::resource('categories', CategoryController::class);
