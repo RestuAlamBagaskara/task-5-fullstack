@@ -71,7 +71,9 @@ class DashboardPostController extends Controller
      */
     public function edit(Article $post)
     {
-        //
+        return view('dashboard.posts.edit',[
+            'post'=> $post
+        ]);
     }
 
     /**
@@ -83,7 +85,18 @@ class DashboardPostController extends Controller
      */
     public function update(Request $request, Article $post)
     {
-        //
+        $validatedData = $request->validate([
+            'tittle'=>'required|max:255',
+            'category_id'=>'required',
+            'user_id'=>'required',
+            'content'=>'required',
+            'image'=>'required'
+        ]);
+
+        Article::where('id',$post->id)
+                ->update($validatedData);
+
+        return redirect('/dashboard/posts');
     }
 
     /**
